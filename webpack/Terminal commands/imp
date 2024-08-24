@@ -1,0 +1,4 @@
+1-  npm init -v
+2-  npm init -y
+3-  npm install webpack webpack-cli
+4-  npm run build //on every changes in your code
