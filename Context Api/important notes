@@ -1,0 +1,120 @@
+# **What is Context API in React?** 🎯
+
+## **1️⃣ Introduction**
+The **Context API** in React provides a way to **share data** between components **without passing props manually** at every level. It is useful for managing **global state** like user authentication, themes, and language settings.
+
+🔹 **Before Context API** → We passed data from parent to child using **props** (prop drilling).  
+🔹 **With Context API** → We can access data **anywhere in the component tree** without prop drilling.
+
+---
+
+## **2️⃣ When to Use Context API?**
+✅ When multiple components need access to the same **global data** (e.g., theme, authentication, language).  
+✅ When **passing props becomes too deep** (avoiding prop drilling).  
+✅ When **state management libraries** (Redux, Zustand) are unnecessary.
+
+---
+
+## **3️⃣ How Does Context API Work?**
+It has **three main parts**:
+1. **`React.createContext()`** – Creates the context.
+2. **`Provider`** – Wraps components and provides data.
+3. **`useContext()`** – Consumes the data inside components.
+
+---
+
+## **4️⃣ Step-by-Step Example: Creating a Theme Context** 🎨
+
+### **📌 Step 1: Create a Context**
+Create a new file: **`ThemeContext.js`**
+```jsx
+import { createContext, useState } from "react";
+
+// Step 1: Create a Context
+export const ThemeContext = createContext();
+
+// Step 2: Create a Provider Component
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState("light");
+
+  // Function to toggle theme
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children} 
+    </ThemeContext.Provider>
+  );
+};
+```
+
+---
+
+### **📌 Step 2: Wrap the App in Provider**
+In **`App.js`**, wrap the whole app with `ThemeProvider`:
+```jsx
+import React from "react";
+import { ThemeProvider } from "./ThemeContext"; // Import ThemeProvider
+import Home from "./Home"; 
+
+function App() {
+  return (
+    <ThemeProvider>
+      <Home />
+    </ThemeProvider>
+  );
+}
+
+export default App;
+```
+
+---
+
+### **📌 Step 3: Use the Context in Components**
+Now, any component inside `ThemeProvider` can access the **theme** and **toggleTheme** function **without props**.
+
+Modify **`Home.js`**:
+```jsx
+import React, { useContext } from "react";
+import { ThemeContext } from "./ThemeContext"; // Import context
+
+const Home = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext); // Use context
+
+  return (
+    <div style={{ background: theme === "light" ? "#fff" : "#333", color: theme === "light" ? "#000" : "#fff", padding: "20px" }}>
+      <h1>{theme.toUpperCase()} MODE</h1>
+      <button onClick={toggleTheme}>Toggle Theme</button>
+    </div>
+  );
+};
+
+export default Home;
+```
+✅ **Now, clicking the button will toggle between Light & Dark themes globally!**
+
+---
+
+## **5️⃣ When NOT to Use Context API?**
+🚫 If the state is **local** to a single component, **use `useState` or `useReducer` instead**.  
+🚫 For **very large applications**, consider **Redux** or other state management solutions.
+
+---
+
+## **6️⃣ Context API vs Redux: What's the Difference?**
+| Feature       | Context API | Redux |
+|--------------|------------|-------|
+| Complexity   | Simple | More complex |
+| Performance  | Fine for small apps | Optimized for large apps |
+| Data Flow    | Unidirectional | Centralized store |
+| When to Use? | Small-medium apps | Large apps with complex state |
+
+---
+
+## **7️⃣ Conclusion**
+- **Context API** is a built-in React feature to manage **global state** without prop drilling.
+- Best for **themes, authentication, language settings, and user preferences**.
+- Simple to use with **`useContext()`** and **`Provider`**.
+- For large-scale apps, **consider Redux**.
